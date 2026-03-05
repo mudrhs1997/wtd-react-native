@@ -1,7 +1,0 @@
-import Swinject
-
-
-public final class {{name}}: Assembly {
-  public init() { }
-  
-}
