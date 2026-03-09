@@ -55,7 +55,7 @@ export default function OnboardingScreen() {
   }, []);
 
   const handleComplete = useCallback(() => {
-    // TODO: loginEmail이 있으면 로그인 처리 후 이동
+    // TODO: if loginEmail exists, handle login then navigate
     markOnboardingComplete();
     router.replace('/');
   }, [loginEmail]);
@@ -101,18 +101,18 @@ export default function OnboardingScreen() {
       style={styles.root}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      {/* 헤더 — 건너뛰기 버튼 (2~3단계에서만 표시) */}
+      {/* Header — skip button (shown on steps 2–3) */}
       <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
         {!isFirstStep && !isLastStep ? (
           <Pressable style={styles.skipButton} onPress={handleSkip} hitSlop={12}>
-            <Text style={styles.skipText}>건너뛰기</Text>
+            <Text style={styles.skipText}>Skip</Text>
           </Pressable>
         ) : (
           <View style={styles.skipPlaceholder} />
         )}
       </View>
 
-      {/* 슬라이드 영역 */}
+      {/* Slide area */}
       <FlatList
         ref={flatListRef}
         data={STEPS}
@@ -128,9 +128,9 @@ export default function OnboardingScreen() {
         style={styles.flatList}
       />
 
-      {/* 하단 네비게이션 */}
+      {/* Bottom navigation */}
       <View style={[styles.bottomNav, { paddingBottom: insets.bottom + 20 }]}>
-        {/* 페이지 도트 인디케이터 */}
+        {/* Page dot indicator */}
         <View style={styles.dots}>
           {STEPS.map((_, i) => (
             <View
@@ -140,7 +140,7 @@ export default function OnboardingScreen() {
           ))}
         </View>
 
-        {/* CTA 버튼 */}
+        {/* CTA button */}
         <Pressable
           style={({ pressed }) => [
             styles.ctaButton,
@@ -149,18 +149,18 @@ export default function OnboardingScreen() {
           onPress={isLastStep ? handleComplete : handleNext}
         >
           <Text style={styles.ctaText}>
-            {isLastStep ? '시작하기' : '다음'}
+            {isLastStep ? 'Get Started' : 'Next'}
           </Text>
         </Pressable>
 
-        {/* 로그인 단계 — 나중에 로그인 링크 */}
+        {/* Login step — login later link */}
         {isLastStep ? (
           <Pressable
             style={styles.skipLoginButton}
             onPress={handleSkip}
             hitSlop={8}
           >
-            <Text style={styles.skipLoginText}>나중에 로그인하기</Text>
+            <Text style={styles.skipLoginText}>Log in later</Text>
           </Pressable>
         ) : (
           <View style={styles.skipLoginPlaceholder} />

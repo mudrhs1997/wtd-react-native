@@ -47,7 +47,7 @@ export default function ComposeModal({ visible, onClose, onSubmit }: Props) {
       transparent
       onRequestClose={handleClose}
     >
-      {/* 배경 딤 */}
+      {/* Background dim */}
       <Pressable style={styles.backdrop} onPress={handleClose} />
 
       <KeyboardAvoidingView
@@ -55,21 +55,21 @@ export default function ComposeModal({ visible, onClose, onSubmit }: Props) {
         style={styles.kavWrapper}
       >
         <View style={[styles.sheet, { paddingBottom: insets.bottom + 20 }]}>
-          {/* 핸들바 */}
+          {/* Handle bar */}
           <View style={styles.handle} />
 
           <View style={styles.header}>
-            <Text style={styles.title}>고민 올리기</Text>
+            <Text style={styles.title}>Post a Dilemma</Text>
             <TouchableOpacity onPress={handleClose} hitSlop={12}>
-              <Text style={styles.cancelText}>취소</Text>
+              <Text style={styles.cancelText}>Cancel</Text>
             </TouchableOpacity>
           </View>
 
-          {/* 닉네임 입력 */}
-          <Text style={styles.label}>닉네임</Text>
+          {/* Nickname input */}
+          <Text style={styles.label}>Nickname</Text>
           <TextInput
             style={styles.input}
-            placeholder="ex. 고민러, 익명1234"
+            placeholder="ex. Curious1, Anonymous42"
             placeholderTextColor="#9ca3af"
             value={author}
             onChangeText={setAuthor}
@@ -77,11 +77,11 @@ export default function ComposeModal({ visible, onClose, onSubmit }: Props) {
             returnKeyType="next"
           />
 
-          {/* 고민 입력 */}
-          <Text style={styles.label}>고민</Text>
+          {/* Dilemma input */}
+          <Text style={styles.label}>Dilemma</Text>
           <TextInput
             style={[styles.input, styles.questionInput]}
-            placeholder={'사람들에게 YES / NO로 물어볼\n나의 고민을 적어주세요.'}
+            placeholder={'Write your dilemma for\npeople to answer YES or NO.'}
             placeholderTextColor="#9ca3af"
             value={question}
             onChangeText={setQuestion}
@@ -91,14 +91,14 @@ export default function ComposeModal({ visible, onClose, onSubmit }: Props) {
           />
           <Text style={styles.counter}>{question.length} / 200</Text>
 
-          {/* 제출 버튼 */}
+          {/* Submit button */}
           <TouchableOpacity
             style={[styles.submitBtn, !canSubmit && styles.submitBtnDisabled]}
             onPress={handleSubmit}
             activeOpacity={0.8}
             disabled={!canSubmit}
           >
-            <Text style={styles.submitText}>올리기</Text>
+            <Text style={styles.submitText}>Post</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>

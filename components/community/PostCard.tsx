@@ -39,7 +39,7 @@ function VoteButton({ vote, isActive, hasVoted, count, onPress }: VoteButtonProp
   }
 
   function handlePressOut() {
-    // pressOut 후 onPress가 없었을 때(손가락 밖으로 나간 경우) 복원
+    // Restore if no onPress after pressOut (finger slipped out)
     Animated.spring(scaleAnim, {
       toValue: 1,
       tension: 250,
@@ -52,7 +52,7 @@ function VoteButton({ vote, isActive, hasVoted, count, onPress }: VoteButtonProp
     const willBeActive = !isActive;
 
     if (willBeActive) {
-      // 신규 투표 또는 전환 → 꽉 눌렸다 강하게 튀어오르는 바운스
+      // New vote or switch → strong bounce effect
       Animated.sequence([
         Animated.timing(scaleAnim, {
           toValue: 0.86,
@@ -67,7 +67,7 @@ function VoteButton({ vote, isActive, hasVoted, count, onPress }: VoteButtonProp
         }),
       ]).start();
     } else {
-      // 투표 취소 → 부드러운 sink
+      // Cancel vote → smooth sink
       Animated.sequence([
         Animated.timing(scaleAnim, {
           toValue: 0.94,
@@ -112,11 +112,11 @@ function VoteButton({ vote, isActive, hasVoted, count, onPress }: VoteButtonProp
 function formatTime(date: Date): string {
   const diff = Date.now() - date.getTime();
   const minutes = Math.floor(diff / 60000);
-  if (minutes < 1) return '방금 전';
-  if (minutes < 60) return `${minutes}분 전`;
+  if (minutes < 1) return 'just now';
+  if (minutes < 60) return `${minutes}m ago`;
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}시간 전`;
-  return `${Math.floor(hours / 24)}일 전`;
+  if (hours < 24) return `${hours}h ago`;
+  return `${Math.floor(hours / 24)}d ago`;
 }
 
 export default function PostCard({ post, onVote }: Props) {
@@ -154,7 +154,7 @@ export default function PostCard({ post, onVote }: Props) {
 
   return (
     <View style={styles.card}>
-      {/* 작성자 정보 */}
+      {/* Author info */}
       <View style={styles.meta}>
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>{post.author[0].toUpperCase()}</Text>
@@ -163,10 +163,10 @@ export default function PostCard({ post, onVote }: Props) {
         <Text style={styles.time}>{formatTime(post.createdAt)}</Text>
       </View>
 
-      {/* 질문 */}
+      {/* Question */}
       <Text style={styles.question}>{post.question}</Text>
 
-      {/* 투표 결과 바 (투표 후 표시) */}
+      {/* Vote result bar (shown after voting) */}
       <Animated.View style={[styles.barSection, { opacity: revealAnim }]}>
         <View style={styles.barTrack}>
           <Animated.View style={[styles.barYes, { width: barYesWidth }]} />
@@ -175,14 +175,14 @@ export default function PostCard({ post, onVote }: Props) {
           <Text style={[styles.ratioLabel, styles.ratioYes]}>
             YES · {Math.round(yesRatio * 100)}%
           </Text>
-          <Text style={styles.totalCount}>{total}명 참여</Text>
+          <Text style={styles.totalCount}>{total} voted</Text>
           <Text style={[styles.ratioLabel, styles.ratioNo]}>
             {Math.round((1 - yesRatio) * 100)}% · NO
           </Text>
         </View>
       </Animated.View>
 
-      {/* 투표 버튼 */}
+      {/* Vote buttons */}
       <View style={styles.voteRow}>
         <VoteButton
           vote="yes"

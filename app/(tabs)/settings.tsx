@@ -84,73 +84,73 @@ export default function SettingsScreen() {
       <StatusBar style="dark" />
 
       <View style={styles.header}>
-        <Text style={styles.heading}>설정</Text>
+        <Text style={styles.heading}>Settings</Text>
       </View>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scroll}
       >
-        {/* 프로필 카드 */}
+        {/* Profile card */}
         <TouchableOpacity style={styles.profileCard} activeOpacity={0.7}>
           <View style={styles.avatar}>
             <Ionicons name="person" size={28} color="#9ca3af" />
           </View>
           <View style={styles.profileText}>
-            <Text style={styles.profileName}>로그인이 필요해요</Text>
-            <Text style={styles.profileSub}>탭하여 로그인하기</Text>
+            <Text style={styles.profileName}>Login required</Text>
+            <Text style={styles.profileSub}>Tap to log in</Text>
           </View>
           <Ionicons name="chevron-forward" size={18} color="#d1d5db" />
         </TouchableOpacity>
 
-        <SettingSection title="일반">
+        <SettingSection title="General">
           <SettingRow
             icon="notifications-outline"
-            label="알림"
+            label="Notifications"
             hasToggle
             toggleValue={notifications}
             onToggle={setNotifications}
           />
           <SettingRow
             icon="phone-portrait-outline"
-            label="햅틱 피드백"
+            label="Haptic Feedback"
             hasToggle
             toggleValue={haptics}
             onToggle={setHaptics}
           />
           <SettingRow
             icon="language-outline"
-            label="언어"
-            value="한국어"
+            label="Language"
+            value="English"
             isLast
           />
         </SettingSection>
 
-        <SettingSection title="앱 정보">
+        <SettingSection title="App Info">
           <SettingRow
             icon="information-circle-outline"
-            label="버전"
+            label="Version"
             value="1.0.0"
           />
           <SettingRow
             icon="document-text-outline"
-            label="이용약관"
+            label="Terms of Service"
           />
           <SettingRow
             icon="shield-checkmark-outline"
-            label="개인정보 처리방침"
+            label="Privacy Policy"
             isLast
           />
         </SettingSection>
 
-        <SettingSection title="피드백">
+        <SettingSection title="Feedback">
           <SettingRow
             icon="star-outline"
-            label="앱 평가하기"
+            label="Rate the App"
           />
           <SettingRow
             icon="chatbox-outline"
-            label="의견 보내기"
+            label="Send Feedback"
             isLast
           />
         </SettingSection>

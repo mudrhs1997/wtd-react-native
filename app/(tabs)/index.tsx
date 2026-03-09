@@ -136,7 +136,7 @@ export default function HomeScreen() {
       const data = await askClaude(trimmed);
       setActiveResult(data);
     } catch (e) {
-      setError(e instanceof Error ? e.message : '오류가 발생했습니다. 다시 시도해주세요.');
+      setError(e instanceof Error ? e.message : 'An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -159,8 +159,8 @@ export default function HomeScreen() {
           style={[styles.titleContainer, { opacity: titleAnim }]}
           pointerEvents="none"
         >
-          <Text style={styles.title}>뭐 해야 할까?</Text>
-          <Text style={styles.subtitle}>질문하면 바로 답해줄게</Text>
+          <Text style={styles.title}>What Should I Do?</Text>
+          <Text style={styles.subtitle}>Ask and I'll answer right away</Text>
         </Animated.View>
 
         <Animated.View

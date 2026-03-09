@@ -16,8 +16,8 @@ import PostCard, { type Post } from '../../components/community/PostCard';
 const INITIAL_POSTS: Post[] = [
   {
     id: '1',
-    question: '내일 중요한 미팅인데 오늘 밤 야식 먹어도 될까?',
-    author: '야식유혹중',
+    question: 'I have an important meeting tomorrow. Should I eat late-night snacks tonight?',
+    author: 'LateNightCraver',
     createdAt: new Date(Date.now() - 18 * 60 * 1000),
     yesCount: 42,
     noCount: 11,
@@ -25,8 +25,8 @@ const INITIAL_POSTS: Post[] = [
   },
   {
     id: '2',
-    question: '연봉 20% 올려준다는데 지금 회사 떠나야 할까?',
-    author: '이직고민',
+    question: "They're offering a 20% raise. Should I leave my current company?",
+    author: 'CareerDebate',
     createdAt: new Date(Date.now() - 2 * 3600 * 1000),
     yesCount: 67,
     noCount: 34,
@@ -34,8 +34,8 @@ const INITIAL_POSTS: Post[] = [
   },
   {
     id: '3',
-    question: '6개월 사귄 사람한테 먼저 사랑한다고 말해도 될까?',
-    author: '설레는중',
+    question: "Is it okay to say 'I love you' first to someone I've been dating for 6 months?",
+    author: 'FallingInLove',
     createdAt: new Date(Date.now() - 5 * 3600 * 1000),
     yesCount: 198,
     noCount: 12,
@@ -43,8 +43,8 @@ const INITIAL_POSTS: Post[] = [
   },
   {
     id: '4',
-    question: '운동 3개월 했는데 몸이 전혀 안 변해. 그냥 포기할까?',
-    author: '헬스포기자',
+    question: "Been working out for 3 months but my body hasn't changed at all. Should I just quit?",
+    author: 'GymDropout',
     createdAt: new Date(Date.now() - 24 * 3600 * 1000),
     yesCount: 4,
     noCount: 156,
@@ -52,8 +52,8 @@ const INITIAL_POSTS: Post[] = [
   },
   {
     id: '5',
-    question: '친구한테 빌려준 돈 50만원, 먼저 달라고 해도 될까?',
-    author: '돈빌려줌',
+    question: 'I lent a friend $500. Should I ask for it back first?',
+    author: 'LentMoney',
     createdAt: new Date(Date.now() - 2 * 24 * 3600 * 1000),
     yesCount: 312,
     noCount: 18,
@@ -73,7 +73,7 @@ export default function CommunityScreen() {
 
         const prevVote = post.userVote;
 
-        // 같은 버튼 재클릭 → 투표 취소
+        // Same button re-clicked → cancel vote
         if (prevVote === vote) {
           return {
             ...post,
@@ -83,7 +83,7 @@ export default function CommunityScreen() {
           };
         }
 
-        // 다른 버튼 클릭 또는 신규 투표
+        // Different button or new vote
         return {
           ...post,
           userVote: vote,
@@ -122,11 +122,11 @@ export default function CommunityScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <StatusBar style="dark" />
 
-      {/* 헤더 */}
+      {/* Header */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.heading}>커뮤니티</Text>
-          <Text style={styles.subheading}>YES or NO로 답해주세요</Text>
+          <Text style={styles.heading}>Community</Text>
+          <Text style={styles.subheading}>Answer with YES or NO</Text>
         </View>
         <TouchableOpacity
           style={styles.writeBtn}
@@ -137,7 +137,7 @@ export default function CommunityScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* 게시물 피드 */}
+      {/* Post feed */}
       <FlatList
         data={posts}
         keyExtractor={(item) => item.id}
@@ -148,15 +148,15 @@ export default function CommunityScreen() {
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyIcon}>💭</Text>
-            <Text style={styles.emptyTitle}>아직 고민이 없어요</Text>
+            <Text style={styles.emptyTitle}>No dilemmas yet</Text>
             <Text style={styles.emptyDesc}>
-              첫 번째 고민을 올려보세요!
+              Be the first to post your dilemma!
             </Text>
           </View>
         }
       />
 
-      {/* 고민 작성 모달 */}
+      {/* Post compose modal */}
       <ComposeModal
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}

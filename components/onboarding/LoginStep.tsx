@@ -39,16 +39,16 @@ export default function LoginStep({ onEmailChange }: Props) {
       ]}
     >
       <View style={styles.textArea}>
-        <Text style={styles.title}>시작할 준비됐나요?</Text>
+        <Text style={styles.title}>Ready to Get Started?</Text>
         <Text style={styles.subtitle}>
-          이메일로 로그인하면{'\n'}언제 어디서나 이용할 수 있어요.
+          Log in with your email{'\n'}to access anytime, anywhere.
         </Text>
       </View>
 
       <View style={styles.form}>
         <TextInput
           style={styles.input}
-          placeholder="이메일 주소"
+          placeholder="Email address"
           placeholderTextColor="#9ca3af"
           keyboardType="email-address"
           autoCapitalize="none"
@@ -60,7 +60,7 @@ export default function LoginStep({ onEmailChange }: Props) {
       </View>
 
       <Text style={styles.hint}>
-        로그인 없이도 앱을 자유롭게 사용할 수 있어요
+        You can use the app freely without logging in
       </Text>
     </Animated.View>
   );

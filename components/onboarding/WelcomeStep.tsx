@@ -46,9 +46,9 @@ export default function WelcomeStep() {
           { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
         ]}
       >
-        <Text style={styles.title}>뭐 해야 할까?</Text>
+        <Text style={styles.title}>What Should I Do?</Text>
         <Text style={styles.subtitle}>
-          결정하기 어려운 순간,{'\n'}바로 답해드릴게요.
+          When decisions get tough,{'\n'}we'll give you an instant answer.
         </Text>
       </Animated.View>
     </View>

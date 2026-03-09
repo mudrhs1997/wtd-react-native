@@ -42,14 +42,14 @@ export default function AnimationStep2() {
       >
         <View style={styles.placeholderInner}>
           <Text style={styles.placeholderIcon}>✦</Text>
-          <Text style={styles.placeholderLabel}>애니메이션 삽입 예정</Text>
+          <Text style={styles.placeholderLabel}>Animation coming soon</Text>
         </View>
       </Animated.View>
 
       <View style={styles.textArea}>
-        <Text style={styles.title}>더 스마트하게</Text>
+        <Text style={styles.title}>Smarter Decisions</Text>
         <Text style={styles.subtitle}>
-          복잡한 상황도{'\n'}간단하게 정리해드려요.
+          Even complex situations{'\n'}broken down simply for you.
         </Text>
       </View>
     </Animated.View>

@@ -31,7 +31,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: '채팅',
+          title: 'Chat',
           tabBarIcon: ({ color, size }) => (
             <TabIcon name="chatbubble-outline" color={color} size={size} />
           ),
@@ -40,7 +40,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="community"
         options={{
-          title: '커뮤니티',
+          title: 'Community',
           tabBarIcon: ({ color, size }) => (
             <TabIcon name="people-outline" color={color} size={size} />
           ),
@@ -49,7 +49,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: '설정',
+          title: 'Settings',
           tabBarIcon: ({ color, size }) => (
             <TabIcon name="person-outline" color={color} size={size} />
           ),
