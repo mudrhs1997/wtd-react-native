@@ -1,6 +1,7 @@
-import { StatusBar } from 'expo-status-bar';
+// app/(tabs)/index.tsx
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
+import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
@@ -11,11 +12,11 @@ import {
   Text,
   View,
 } from 'react-native';
-import AnswerDisplay from '../components/AnswerDisplay';
-import ChatView, { type ChatItem } from '../components/ChatView';
-import QuestionInput from '../components/QuestionInput';
-import ThinkingDots from '../components/ThinkingDots';
-import { askClaude, type AnswerResult } from '../services/claude';
+import AnswerDisplay from '../../components/AnswerDisplay';
+import ChatView, { type ChatItem } from '../../components/ChatView';
+import QuestionInput from '../../components/QuestionInput';
+import ThinkingDots from '../../components/ThinkingDots';
+import { askClaude, type AnswerResult } from '../../services/claude';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const INPUT_CONTAINER_HEIGHT = 130;
@@ -46,7 +47,7 @@ export default function HomeScreen() {
       duration: 300,
       useNativeDriver: true,
     }).start();
-  }, [showDim]);
+  }, [showDim, dimAnim]);
 
   const showBlur = loading || !!activeResult;
 
@@ -56,7 +57,7 @@ export default function HomeScreen() {
       duration: 400,
       useNativeDriver: true,
     }).start();
-  }, [showBlur]);
+  }, [showBlur, blurAnim]);
 
   function handleFocusChange(focused: boolean) {
     setInputFocused(focused);
@@ -152,10 +153,8 @@ export default function HomeScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.container}>
-        {/* 채팅 히스토리 */}
         <ChatView items={chatItems} />
 
-        {/* 초기 타이틀 */}
         <Animated.View
           style={[styles.titleContainer, { opacity: titleAnim }]}
           pointerEvents="none"
@@ -164,7 +163,6 @@ export default function HomeScreen() {
           <Text style={styles.subtitle}>질문하면 바로 답해줄게</Text>
         </Animated.View>
 
-        {/* 답변 표시 중 배경 블러 */}
         <Animated.View
           style={[styles.blurOverlay, { opacity: blurAnim }]}
           pointerEvents="none"
@@ -173,10 +171,8 @@ export default function HomeScreen() {
           <View style={styles.blurDim} />
         </Animated.View>
 
-        {/* 답변 애니메이션 오버레이 */}
         <AnswerDisplay result={activeResult} onComplete={handleComplete} />
 
-        {/* 타이핑 시 그라데이션 딤 */}
         <Animated.View
           style={[styles.dimOverlay, { opacity: dimAnim }]}
           pointerEvents="none"
@@ -192,7 +188,6 @@ export default function HomeScreen() {
 
         {error && <Text style={styles.error}>{error}</Text>}
 
-        {/* 하단 페이드 — 채팅이 입력창 뒤로 자연스럽게 사라지게 */}
         <LinearGradient
           colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0.92)', '#ffffff']}
           locations={[0, 0.45, 1]}
