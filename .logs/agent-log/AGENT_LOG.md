@@ -47,6 +47,6 @@ c4fcce8  chore(rn): add @react-native-async-storage/async-storage
 - `DEV_FORCE_SHOW = true` 플래그로 개발 중 온보딩 매번 노출 (프로덕션은 AsyncStorage 체크)
 - 애니메이션 2·3단계는 placeholder — 실제 애니메이션은 이후 삽입 예정
 - 커뮤니티 데이터는 로컬 상태(mock) — 백엔드 연동 시 별도 작업 필요
-- `gh auth login` 미설정으로 PR은 수동 생성 필요
+- PR 생성 완료: https://github.com/mudrhs1997/wtd-react-native/pull/6
 
 ---
