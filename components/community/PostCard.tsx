@@ -1,6 +1,7 @@
 // components/community/PostCard.tsx
 import React, { useEffect, useRef } from 'react';
 import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
+import { COLORS } from '../../constants/colors';
 
 export interface Post {
   id: string;
@@ -27,6 +28,7 @@ interface VoteButtonProps {
 
 function VoteButton({ vote, isActive, hasVoted, count, onPress }: VoteButtonProps) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
+  const emojiJumpAnim = useRef(new Animated.Value(0)).current;
   const isYes = vote === 'yes';
 
   function handlePressIn() {
@@ -39,7 +41,6 @@ function VoteButton({ vote, isActive, hasVoted, count, onPress }: VoteButtonProp
   }
 
   function handlePressOut() {
-    // pressOut 후 onPress가 없었을 때(손가락 밖으로 나간 경우) 복원
     Animated.spring(scaleAnim, {
       toValue: 1,
       tension: 250,
@@ -52,7 +53,7 @@ function VoteButton({ vote, isActive, hasVoted, count, onPress }: VoteButtonProp
     const willBeActive = !isActive;
 
     if (willBeActive) {
-      // 신규 투표 또는 전환 → 꽉 눌렸다 강하게 튀어오르는 바운스
+      // 버튼 bounce + 이모지 jump
       Animated.sequence([
         Animated.timing(scaleAnim, {
           toValue: 0.86,
@@ -66,8 +67,22 @@ function VoteButton({ vote, isActive, hasVoted, count, onPress }: VoteButtonProp
           useNativeDriver: true,
         }),
       ]).start();
+
+      Animated.sequence([
+        Animated.timing(emojiJumpAnim, {
+          toValue: -14,
+          duration: 100,
+          useNativeDriver: true,
+        }),
+        Animated.spring(emojiJumpAnim, {
+          toValue: 0,
+          tension: 380,
+          friction: 6,
+          useNativeDriver: true,
+        }),
+      ]).start();
     } else {
-      // 투표 취소 → 부드러운 sink
+      // 취소 → smooth sink
       Animated.sequence([
         Animated.timing(scaleAnim, {
           toValue: 0.94,
@@ -100,10 +115,19 @@ function VoteButton({ vote, isActive, hasVoted, count, onPress }: VoteButtonProp
           { transform: [{ scale: scaleAnim }] },
         ]}
       >
-        <Text style={[styles.voteBtnText, isActive && styles.voteBtnTextActive]}>
-          {isYes ? '👍' : '👎'}{'  '}{vote.toUpperCase()}
-          {hasVoted ? `  ${count}` : ''}
-        </Text>
+        <View style={styles.voteBtnInner}>
+          <Animated.Text
+            style={[
+              styles.voteBtnEmoji,
+              { transform: [{ translateY: emojiJumpAnim }] },
+            ]}
+          >
+            {isYes ? '👍' : '👎'}
+          </Animated.Text>
+          <Text style={[styles.voteBtnText, isActive && styles.voteBtnTextActive]}>
+            {'  '}{vote.toUpperCase()}{hasVoted ? `  ${count}` : ''}
+          </Text>
+        </View>
       </Animated.View>
     </Pressable>
   );
@@ -112,11 +136,11 @@ function VoteButton({ vote, isActive, hasVoted, count, onPress }: VoteButtonProp
 function formatTime(date: Date): string {
   const diff = Date.now() - date.getTime();
   const minutes = Math.floor(diff / 60000);
-  if (minutes < 1) return '방금 전';
-  if (minutes < 60) return `${minutes}분 전`;
+  if (minutes < 1) return 'just now';
+  if (minutes < 60) return `${minutes}m ago`;
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}시간 전`;
-  return `${Math.floor(hours / 24)}일 전`;
+  if (hours < 24) return `${hours}h ago`;
+  return `${Math.floor(hours / 24)}d ago`;
 }
 
 export default function PostCard({ post, onVote }: Props) {
@@ -154,7 +178,7 @@ export default function PostCard({ post, onVote }: Props) {
 
   return (
     <View style={styles.card}>
-      {/* 작성자 정보 */}
+      {/* Author info */}
       <View style={styles.meta}>
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>{post.author[0].toUpperCase()}</Text>
@@ -163,10 +187,10 @@ export default function PostCard({ post, onVote }: Props) {
         <Text style={styles.time}>{formatTime(post.createdAt)}</Text>
       </View>
 
-      {/* 질문 */}
+      {/* Question */}
       <Text style={styles.question}>{post.question}</Text>
 
-      {/* 투표 결과 바 (투표 후 표시) */}
+      {/* Vote result bar (shown after voting) */}
       <Animated.View style={[styles.barSection, { opacity: revealAnim }]}>
         <View style={styles.barTrack}>
           <Animated.View style={[styles.barYes, { width: barYesWidth }]} />
@@ -175,14 +199,14 @@ export default function PostCard({ post, onVote }: Props) {
           <Text style={[styles.ratioLabel, styles.ratioYes]}>
             YES · {Math.round(yesRatio * 100)}%
           </Text>
-          <Text style={styles.totalCount}>{total}명 참여</Text>
+          <Text style={styles.totalCount}>{total} voted</Text>
           <Text style={[styles.ratioLabel, styles.ratioNo]}>
             {Math.round((1 - yesRatio) * 100)}% · NO
           </Text>
         </View>
       </Animated.View>
 
-      {/* 투표 버튼 */}
+      {/* Vote buttons */}
       <View style={styles.voteRow}>
         <VoteButton
           vote="yes"
@@ -205,17 +229,12 @@ export default function PostCard({ post, onVote }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.bgCard,
     borderRadius: 20,
     padding: 18,
     marginHorizontal: 16,
     borderWidth: 1,
-    borderColor: '#f3f4f6',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 6,
-    elevation: 1,
+    borderColor: COLORS.borderTabBar,
   },
   meta: {
     flexDirection: 'row',
@@ -227,29 +246,31 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: COLORS.bgCardAlt,
+    borderWidth: 1,
+    borderColor: COLORS.borderGold,
     alignItems: 'center',
     justifyContent: 'center',
   },
   avatarText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#6b7280',
+    color: COLORS.textAccent,
   },
   author: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#374151',
+    color: COLORS.textLight,
     flex: 1,
   },
   time: {
     fontSize: 12,
-    color: '#9ca3af',
+    color: COLORS.textAccent,
   },
   question: {
     fontSize: 17,
     fontWeight: '700',
-    color: '#111827',
+    color: COLORS.textPrimary,
     lineHeight: 26,
     letterSpacing: -0.3,
     marginBottom: 16,
@@ -259,14 +280,14 @@ const styles = StyleSheet.create({
   },
   barTrack: {
     height: 6,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: COLORS.bgTrack,
     borderRadius: 3,
     overflow: 'hidden',
     marginBottom: 6,
   },
   barYes: {
     height: '100%',
-    backgroundColor: '#111827',
+    backgroundColor: COLORS.textAccent,
     borderRadius: 3,
   },
   ratioRow: {
@@ -278,17 +299,17 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   ratioYes: {
-    color: '#111827',
+    color: COLORS.textLight,
     flex: 1,
   },
   ratioNo: {
-    color: '#9ca3af',
+    color: COLORS.textAccent,
     flex: 1,
     textAlign: 'right',
   },
   totalCount: {
     fontSize: 12,
-    color: '#9ca3af',
+    color: COLORS.textAccent,
     textAlign: 'center',
     flex: 1,
   },
@@ -303,25 +324,32 @@ const styles = StyleSheet.create({
     height: 44,
     borderRadius: 12,
     borderWidth: 1.5,
-    borderColor: '#e5e7eb',
+    borderColor: COLORS.borderTabBar,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.bgCardAlt,
   },
   voteBtnYesActive: {
-    backgroundColor: '#111827',
-    borderColor: '#111827',
+    backgroundColor: COLORS.textAccent,
+    borderColor: COLORS.textAccent,
   },
   voteBtnNoActive: {
-    backgroundColor: '#6b7280',
-    borderColor: '#6b7280',
+    backgroundColor: COLORS.bgAnswer,
+    borderColor: COLORS.textSpoken,
+  },
+  voteBtnInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  voteBtnEmoji: {
+    fontSize: 16,
   },
   voteBtnText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#374151',
+    color: COLORS.textAccent,
   },
   voteBtnTextActive: {
-    color: '#fff',
+    color: COLORS.bg,
   },
 });

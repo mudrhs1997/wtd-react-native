@@ -13,63 +13,63 @@ type MockRule = {
 
 const MOCK_RULES: MockRule[] = [
   {
-    pattern: /읽/,
-    yes: { answer: '읽어', reason: '읽으면 분명 남는 게 있어' },
-    no: { answer: '읽지마', reason: '지금 네 시간이 더 소중해' },
+    pattern: /read|book/i,
+    yes: { answer: 'Read it', reason: "You'll definitely get something out of it" },
+    no: { answer: 'Skip it', reason: 'Your time matters more right now' },
   },
   {
-    pattern: /볼까|볼지|봐야/,
-    yes: { answer: '봐', reason: '한 번쯤은 볼 만한 가치가 있어' },
-    no: { answer: '보지마', reason: '시간 아까워, 다른 걸 해' },
+    pattern: /watch|see|movie|show/i,
+    yes: { answer: 'Watch it', reason: "It's worth seeing at least once" },
+    no: { answer: 'Skip it', reason: 'Not worth your time, do something else' },
   },
   {
-    pattern: /갈까|가야|가볼/,
-    yes: { answer: '가', reason: '가면 후회 안 할 거야' },
-    no: { answer: '가지마', reason: '굳이 지금 안 가도 돼' },
+    pattern: /go|visit|attend/i,
+    yes: { answer: 'Go', reason: "You won't regret going" },
+    no: { answer: 'Stay', reason: 'No need to go right now' },
   },
   {
-    pattern: /살까|사야|구매/,
-    yes: { answer: '사', reason: '지금 아니면 후회할 것 같은데' },
-    no: { answer: '사지마', reason: '지갑이 먼저야' },
+    pattern: /buy|purchase|get/i,
+    yes: { answer: 'Buy it', reason: "You'll regret it if you don't" },
+    no: { answer: "Don't buy", reason: 'Your wallet comes first' },
   },
   {
-    pattern: /먹/,
-    yes: { answer: '먹어', reason: '먹고 싶을 땐 먹는 게 맞아' },
-    no: { answer: '먹지마', reason: '나중에 더 맛있는 거 먹어' },
+    pattern: /eat|food|meal|lunch|dinner|breakfast/i,
+    yes: { answer: 'Eat it', reason: "Eat when you're craving it" },
+    no: { answer: 'Skip it', reason: 'Save it for something tastier later' },
   },
   {
-    pattern: /연락|전화|문자/,
-    yes: { answer: '연락해', reason: '먼저 손 내미는 게 용기야' },
-    no: { answer: '연락하지마', reason: '상대방도 준비가 필요할 수 있어' },
+    pattern: /call|text|contact|message|reach/i,
+    yes: { answer: 'Reach out', reason: 'It takes courage to reach out first' },
+    no: { answer: 'Hold off', reason: 'They might need space too' },
   },
   {
-    pattern: /잘까|자야|잠/,
-    yes: { answer: '자', reason: '몸이 쉬라고 하면 쉬어야 해' },
-    no: { answer: '자지마', reason: '조금만 더 버텨봐' },
+    pattern: /sleep|nap|rest/i,
+    yes: { answer: 'Sleep', reason: 'Rest when your body tells you to' },
+    no: { answer: 'Stay up', reason: 'Hang in there a little longer' },
   },
   {
-    pattern: /운동|헬스|달리/,
-    yes: { answer: '해', reason: '움직이면 분명 기분이 나아져' },
-    no: { answer: '쉬어', reason: '오늘은 몸이 회복할 시간이 필요해' },
+    pattern: /workout|exercise|gym|run/i,
+    yes: { answer: 'Do it', reason: 'Moving will definitely lift your mood' },
+    no: { answer: 'Rest', reason: 'Your body needs time to recover' },
   },
 ];
 
 const FALLBACK_PAIRS: AnswerResult[][] = [
   [
-    { answer: '해', reason: '망설일 시간에 그냥 하는 게 나아' },
-    { answer: '하지마', reason: '직감이 하지 말라고 하잖아' },
+    { answer: 'Go for it', reason: 'Just doing it beats hesitating' },
+    { answer: "Don't do it", reason: 'Your gut is saying no' },
   ],
   [
-    { answer: '좋아', reason: '생각보다 잘 될 거야' },
-    { answer: '별로야', reason: '더 나은 선택지가 있을 것 같아' },
+    { answer: 'Sounds good', reason: "It'll turn out better than you think" },
+    { answer: 'Not really', reason: 'There might be a better option' },
   ],
   [
-    { answer: '고고', reason: '일단 부딪혀 봐야 알아' },
-    { answer: '그만둬', reason: '억지로 하면 결과도 안 좋아' },
+    { answer: "Let's go", reason: 'You gotta try to find out' },
+    { answer: 'Stop it', reason: "Forced effort won't get results" },
   ],
   [
-    { answer: '당연하지', reason: '이게 맞는 방향이야' },
-    { answer: '절대안돼', reason: '지금은 아닌 것 같아' },
+    { answer: 'Absolutely', reason: 'This is the right direction' },
+    { answer: 'No way', reason: "Doesn't feel right for now" },
   ],
 ];
 
@@ -87,14 +87,14 @@ async function mockAnswer(question: string): Promise<AnswerResult> {
   return isYes ? pair[0] : pair[1];
 }
 
-const SYSTEM_PROMPT = `당신은 매우 간결한 조언자입니다. 사용자의 질문에 대해 아래 JSON 형식으로만 답변하세요.
+const SYSTEM_PROMPT = `You are a very concise advisor. Respond to the user's question only in the following JSON format.
 
-{"answer": "짧은 답변", "reason": "한 줄 이유"}
+{"answer": "short answer", "reason": "one-line reason"}
 
-규칙:
-- answer: 2~5글자의 매우 짧은 한국어 (예: 해, 하지마, 읽어, 읽지마, 가, 가지마)
-- reason: 15글자 이내의 짧은 이유 (예: 지금이 딱 좋은 타이밍이야)
-- JSON 외 다른 텍스트는 절대 포함하지 마세요`;
+Rules:
+- answer: a very short response in 2-5 words in English (e.g., Do it, Don't do it, Read it, Skip it, Go, Stay)
+- reason: a short reason within 15 words (e.g., Now is the perfect timing)
+- Do not include any text outside of JSON`;
 
 const API_URL = 'https://api.anthropic.com/v1/messages';
 
@@ -129,7 +129,7 @@ async function callClaude(question: string): Promise<AnswerResult> {
   const parsed = JSON.parse(text.trim());
 
   if (!parsed.answer || !parsed.reason) {
-    throw new Error('응답 형식이 올바르지 않습니다.');
+    throw new Error('Invalid response format.');
   }
 
   return { answer: parsed.answer, reason: parsed.reason };
@@ -143,11 +143,11 @@ export async function askClaude(question: string): Promise<AnswerResult> {
   try {
     return await callClaude(question);
   } catch (firstError) {
-    console.warn('[askClaude] 첫 번째 시도 실패, 재시도 중…', firstError);
+    console.warn('[askClaude] First attempt failed, retrying…', firstError);
     try {
       return await callClaude(question);
     } catch (retryError) {
-      console.error('[askClaude] 재시도도 실패:', retryError);
+      console.error('[askClaude] Retry also failed:', retryError);
       throw retryError;
     }
   }

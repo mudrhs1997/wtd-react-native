@@ -1,81 +1,52 @@
 // app/(tabs)/_layout.tsx
-import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import OracleTabBar from '../../components/OracleTabBar';
 
-type IoniconsName = React.ComponentProps<typeof Ionicons>['name'];
-
-interface TabIconProps {
-  name: IoniconsName;
-  color: string;
-  size: number;
-}
-
-function TabIcon({ name, color, size }: TabIconProps) {
-  return <Ionicons name={name} size={size} color={color} />;
+function TopFade() {
+  const insets = useSafeAreaInsets();
+  return (
+    <LinearGradient
+      colors={[
+        'rgba(220,221,216,1)',
+        'rgba(220,221,216,0.72)',
+        'rgba(220,221,216,0.25)',
+        'rgba(220,221,216,0)',
+      ]}
+      locations={[0, 0.42, 0.72, 1]}
+      style={[styles.topFade, { height: insets.top + 48 }]}
+      pointerEvents="none"
+    />
+  );
 }
 
 export default function TabLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: styles.tabBar,
-        tabBarActiveTintColor: '#111827',
-        tabBarInactiveTintColor: '#9ca3af',
-        tabBarLabelStyle: styles.tabLabel,
-        tabBarShowLabel: true,
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: '채팅',
-          tabBarIcon: ({ color, size }) => (
-            <TabIcon name="chatbubble-outline" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="community"
-        options={{
-          title: '커뮤니티',
-          tabBarIcon: ({ color, size }) => (
-            <TabIcon name="people-outline" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: '설정',
-          tabBarIcon: ({ color, size }) => (
-            <TabIcon name="person-outline" color={color} size={size} />
-          ),
-        }}
-      />
-    </Tabs>
+    <View style={styles.container}>
+      <Tabs
+        screenOptions={{ headerShown: false }}
+        tabBar={(props) => <OracleTabBar {...props} />}
+      >
+        <Tabs.Screen name="index" options={{ title: 'ASK' }} />
+        <Tabs.Screen name="community" options={{ title: 'COMMUNITY' }} />
+        <Tabs.Screen name="settings" options={{ title: 'PROFILE' }} />
+      </Tabs>
+      <TopFade />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  tabBar: {
-    backgroundColor: '#ffffff',
-    borderTopWidth: 0.5,
-    borderTopColor: '#f3f4f6',
-    height: 80,
-    paddingTop: 8,
-    paddingBottom: 20,
-    elevation: 0,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
+  container: {
+    flex: 1,
   },
-  tabLabel: {
-    fontSize: 11,
-    fontWeight: '500',
-    marginTop: 2,
+  topFade: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
   },
 });

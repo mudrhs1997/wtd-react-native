@@ -1,23 +1,29 @@
 // app/(tabs)/community.tsx
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
+  Animated,
   FlatList,
+  LayoutChangeEvent,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { COLORS } from '../../constants/colors';
 import ComposeModal from '../../components/community/ComposeModal';
 import PostCard, { type Post } from '../../components/community/PostCard';
 
 const INITIAL_POSTS: Post[] = [
   {
     id: '1',
-    question: '내일 중요한 미팅인데 오늘 밤 야식 먹어도 될까?',
-    author: '야식유혹중',
+    question: 'I have an important meeting tomorrow. Should I eat late-night snacks tonight?',
+    author: 'LateNightCraver',
     createdAt: new Date(Date.now() - 18 * 60 * 1000),
     yesCount: 42,
     noCount: 11,
@@ -25,8 +31,8 @@ const INITIAL_POSTS: Post[] = [
   },
   {
     id: '2',
-    question: '연봉 20% 올려준다는데 지금 회사 떠나야 할까?',
-    author: '이직고민',
+    question: "They're offering a 20% raise. Should I leave my current company?",
+    author: 'CareerDebate',
     createdAt: new Date(Date.now() - 2 * 3600 * 1000),
     yesCount: 67,
     noCount: 34,
@@ -34,8 +40,8 @@ const INITIAL_POSTS: Post[] = [
   },
   {
     id: '3',
-    question: '6개월 사귄 사람한테 먼저 사랑한다고 말해도 될까?',
-    author: '설레는중',
+    question: "Is it okay to say 'I love you' first to someone I've been dating for 6 months?",
+    author: 'FallingInLove',
     createdAt: new Date(Date.now() - 5 * 3600 * 1000),
     yesCount: 198,
     noCount: 12,
@@ -43,8 +49,8 @@ const INITIAL_POSTS: Post[] = [
   },
   {
     id: '4',
-    question: '운동 3개월 했는데 몸이 전혀 안 변해. 그냥 포기할까?',
-    author: '헬스포기자',
+    question: "Been working out for 3 months but my body hasn't changed at all. Should I just quit?",
+    author: 'GymDropout',
     createdAt: new Date(Date.now() - 24 * 3600 * 1000),
     yesCount: 4,
     noCount: 156,
@@ -52,8 +58,8 @@ const INITIAL_POSTS: Post[] = [
   },
   {
     id: '5',
-    question: '친구한테 빌려준 돈 50만원, 먼저 달라고 해도 될까?',
-    author: '돈빌려줌',
+    question: 'I lent a friend $500. Should I ask for it back first?',
+    author: 'LentMoney',
     createdAt: new Date(Date.now() - 2 * 24 * 3600 * 1000),
     yesCount: 312,
     noCount: 18,
@@ -64,7 +70,60 @@ const INITIAL_POSTS: Post[] = [
 export default function CommunityScreen() {
   const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [headerHeight, setHeaderHeight] = useState(0);
   const insets = useSafeAreaInsets();
+
+  // 헤더 숨김/표시 애니메이션
+  const headerTranslateY = useRef(new Animated.Value(0)).current;
+  const headerVisibleRef = useRef(true);
+  const scrollYRef = useRef(0);
+  const headerHeightRef = useRef(0);
+
+  function handleHeaderLayout(e: LayoutChangeEvent) {
+    const h = e.nativeEvent.layout.height;
+    setHeaderHeight(h);
+    headerHeightRef.current = h;
+  }
+
+  function handleScroll(e: NativeSyntheticEvent<NativeScrollEvent>) {
+    const currentY = e.nativeEvent.contentOffset.y;
+    const diff = currentY - scrollYRef.current;
+    scrollYRef.current = currentY;
+
+    // 최상단 근처에선 항상 헤더 표시
+    if (currentY <= 8) {
+      if (!headerVisibleRef.current) {
+        headerVisibleRef.current = true;
+        Animated.spring(headerTranslateY, {
+          toValue: 0,
+          tension: 80,
+          friction: 12,
+          useNativeDriver: true,
+        }).start();
+      }
+      return;
+    }
+
+    if (diff > 5 && headerVisibleRef.current) {
+      // 아래로 스크롤 → 헤더 숨김
+      headerVisibleRef.current = false;
+      Animated.spring(headerTranslateY, {
+        toValue: -headerHeightRef.current,
+        tension: 80,
+        friction: 12,
+        useNativeDriver: true,
+      }).start();
+    } else if (diff < -5 && !headerVisibleRef.current) {
+      // 위로 스크롤 → 헤더 복귀
+      headerVisibleRef.current = true;
+      Animated.spring(headerTranslateY, {
+        toValue: 0,
+        tension: 80,
+        friction: 12,
+        useNativeDriver: true,
+      }).start();
+    }
+  }
 
   const handleVote = useCallback((postId: string, vote: 'yes' | 'no') => {
     setPosts((prev) =>
@@ -73,7 +132,7 @@ export default function CommunityScreen() {
 
         const prevVote = post.userVote;
 
-        // 같은 버튼 재클릭 → 투표 취소
+        // Same button re-clicked → cancel vote
         if (prevVote === vote) {
           return {
             ...post,
@@ -83,7 +142,7 @@ export default function CommunityScreen() {
           };
         }
 
-        // 다른 버튼 클릭 또는 신규 투표
+        // Different button or new vote
         return {
           ...post,
           userVote: vote,
@@ -119,48 +178,69 @@ export default function CommunityScreen() {
   );
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <StatusBar style="dark" />
+    <View style={styles.container}>
+      <StatusBar style="light" />
 
-      {/* 헤더 */}
-      <View style={styles.header}>
+      {/* Post feed — 화면 전체 높이를 차지, 헤더 높이만큼 상단 여백 */}
+      <FlatList
+        data={posts}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        contentContainerStyle={[styles.list, { paddingTop: headerHeight }]}
+        showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={handleScroll}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        ListEmptyComponent={
+          <View style={[styles.emptyContainer, { paddingTop: headerHeight + 60 }]}>
+            <Text style={styles.emptyIcon}>💭</Text>
+            <Text style={styles.emptyTitle}>No dilemmas yet</Text>
+            <Text style={styles.emptyDesc}>
+              Be the first to post your dilemma!
+            </Text>
+          </View>
+        }
+      />
+
+      {/* Header — 스크롤 방향에 따라 위로 숨겨지고 다시 나타남 */}
+      <Animated.View
+        style={[
+          styles.header,
+          { paddingTop: insets.top + 12, transform: [{ translateY: headerTranslateY }] },
+        ]}
+        onLayout={handleHeaderLayout}
+      >
         <View>
-          <Text style={styles.heading}>커뮤니티</Text>
-          <Text style={styles.subheading}>YES or NO로 답해주세요</Text>
+          <Text style={styles.heading}>Community</Text>
+          <Text style={styles.subheading}>Answer with YES or NO</Text>
         </View>
         <TouchableOpacity
           style={styles.writeBtn}
           onPress={() => setIsModalVisible(true)}
           activeOpacity={0.8}
         >
-          <Ionicons name="add" size={22} color="#fff" />
+          <Ionicons name="add" size={22} color={COLORS.bg} />
         </TouchableOpacity>
-      </View>
+      </Animated.View>
 
-      {/* 게시물 피드 */}
-      <FlatList
-        data={posts}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        contentContainerStyle={styles.list}
-        showsVerticalScrollIndicator={false}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyIcon}>💭</Text>
-            <Text style={styles.emptyTitle}>아직 고민이 없어요</Text>
-            <Text style={styles.emptyDesc}>
-              첫 번째 고민을 올려보세요!
-            </Text>
-          </View>
-        }
-      />
-
-      {/* 고민 작성 모달 */}
+      {/* Post compose modal */}
       <ComposeModal
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
         onSubmit={handleAddPost}
+      />
+
+      {/* 상단 그라디언트 — header 위에 렌더링되어 스크롤 아이템이 자연스럽게 페이드 */}
+      <LinearGradient
+        colors={[
+          'rgba(220,221,216,1)',
+          'rgba(220,221,216,0.72)',
+          'rgba(220,221,216,0.25)',
+          'rgba(220,221,216,0)',
+        ]}
+        locations={[0, 0.42, 0.72, 1]}
+        style={[styles.topFade, { height: insets.top + 48 }]}
+        pointerEvents="none"
       />
     </View>
   );
@@ -169,35 +249,44 @@ export default function CommunityScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9fafb',
+    backgroundColor: COLORS.bg,
   },
   header: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingTop: 20,
     paddingBottom: 16,
-    backgroundColor: '#f9fafb',
   },
   heading: {
     fontSize: 28,
-    fontWeight: '800',
-    color: '#111827',
-    letterSpacing: -0.8,
+    fontWeight: '900',
+    color: COLORS.textPrimary,
+    letterSpacing: 2,
   },
   subheading: {
-    fontSize: 13,
-    color: '#9ca3af',
+    fontSize: 12,
+    color: COLORS.textAccent,
     marginTop: 2,
+    fontStyle: 'italic',
   },
   writeBtn: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#111827',
+    backgroundColor: COLORS.textAccent,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  topFade: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
   },
   list: {
     paddingTop: 4,
@@ -219,10 +308,10 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 17,
     fontWeight: '700',
-    color: '#374151',
+    color: COLORS.textPrimary,
   },
   emptyDesc: {
     fontSize: 14,
-    color: '#9ca3af',
+    color: COLORS.textAccent,
   },
 });

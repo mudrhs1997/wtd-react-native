@@ -1,5 +1,6 @@
 // app/(tabs)/settings.tsx
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import {
@@ -11,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { COLORS } from '../../constants/colors';
 
 type IoniconsName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -39,7 +41,7 @@ function SettingRow({
       activeOpacity={hasToggle ? 1 : 0.6}
     >
       <View style={styles.rowIcon}>
-        <Ionicons name={icon} size={18} color="#374151" />
+        <Ionicons name={icon} size={18} color={COLORS.textAccent} />
       </View>
       <Text style={styles.rowLabel}>{label}</Text>
       <View style={styles.rowRight}>
@@ -48,12 +50,12 @@ function SettingRow({
           <Switch
             value={toggleValue}
             onValueChange={onToggle}
-            trackColor={{ false: '#e5e7eb', true: '#111827' }}
-            thumbColor="#fff"
+            trackColor={{ false: COLORS.bgTrack, true: COLORS.textAccent }}
+            thumbColor={COLORS.textLight}
           />
         )}
         {!hasToggle && !value && (
-          <Ionicons name="chevron-forward" size={16} color="#d1d5db" />
+          <Ionicons name="chevron-forward" size={16} color={COLORS.textAccent} />
         )}
       </View>
     </TouchableOpacity>
@@ -81,80 +83,93 @@ export default function SettingsScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <StatusBar style="dark" />
+      <StatusBar style="light" />
 
       <View style={styles.header}>
-        <Text style={styles.heading}>설정</Text>
+        <Text style={styles.heading}>Settings</Text>
       </View>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scroll}
       >
-        {/* 프로필 카드 */}
+        {/* Profile card */}
         <TouchableOpacity style={styles.profileCard} activeOpacity={0.7}>
           <View style={styles.avatar}>
-            <Ionicons name="person" size={28} color="#9ca3af" />
+            <Ionicons name="person" size={28} color={COLORS.textAccent} />
           </View>
           <View style={styles.profileText}>
-            <Text style={styles.profileName}>로그인이 필요해요</Text>
-            <Text style={styles.profileSub}>탭하여 로그인하기</Text>
+            <Text style={styles.profileName}>Login required</Text>
+            <Text style={styles.profileSub}>Tap to log in</Text>
           </View>
-          <Ionicons name="chevron-forward" size={18} color="#d1d5db" />
+          <Ionicons name="chevron-forward" size={18} color={COLORS.textAccent} />
         </TouchableOpacity>
 
-        <SettingSection title="일반">
+        <SettingSection title="General">
           <SettingRow
             icon="notifications-outline"
-            label="알림"
+            label="Notifications"
             hasToggle
             toggleValue={notifications}
             onToggle={setNotifications}
           />
           <SettingRow
             icon="phone-portrait-outline"
-            label="햅틱 피드백"
+            label="Haptic Feedback"
             hasToggle
             toggleValue={haptics}
             onToggle={setHaptics}
           />
           <SettingRow
             icon="language-outline"
-            label="언어"
-            value="한국어"
+            label="Language"
+            value="English"
             isLast
           />
         </SettingSection>
 
-        <SettingSection title="앱 정보">
+        <SettingSection title="App Info">
           <SettingRow
             icon="information-circle-outline"
-            label="버전"
+            label="Version"
             value="1.0.0"
           />
           <SettingRow
             icon="document-text-outline"
-            label="이용약관"
+            label="Terms of Service"
           />
           <SettingRow
             icon="shield-checkmark-outline"
-            label="개인정보 처리방침"
+            label="Privacy Policy"
             isLast
           />
         </SettingSection>
 
-        <SettingSection title="피드백">
+        <SettingSection title="Feedback">
           <SettingRow
             icon="star-outline"
-            label="앱 평가하기"
+            label="Rate the App"
           />
           <SettingRow
             icon="chatbox-outline"
-            label="의견 보내기"
+            label="Send Feedback"
             isLast
           />
         </SettingSection>
       </ScrollView>
+
+      {/* 상단 그라디언트 — 마지막에 두어 z-order 최상위 */}
+      <LinearGradient
+        colors={[
+          'rgba(220,221,216,1)',
+          'rgba(220,221,216,0.72)',
+          'rgba(220,221,216,0.25)',
+          'rgba(220,221,216,0)',
+        ]}
+        locations={[0, 0.42, 0.72, 1]}
+        style={[styles.topFade, { height: insets.top + 48 }]}
+        pointerEvents="none"
+      />
     </View>
   );
 }
@@ -162,7 +177,13 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.bg,
+  },
+  topFade: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
   },
   header: {
     paddingHorizontal: 24,
@@ -171,9 +192,9 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 28,
-    fontWeight: '800',
-    color: '#111827',
-    letterSpacing: -0.8,
+    fontWeight: '900',
+    color: COLORS.textPrimary,
+    letterSpacing: 2,
   },
   scroll: {
     paddingHorizontal: 20,
@@ -184,8 +205,10 @@ const styles = StyleSheet.create({
   profileCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f9fafb',
+    backgroundColor: COLORS.bgCard,
     borderRadius: 18,
+    borderWidth: 1,
+    borderColor: COLORS.borderTabBar,
     padding: 16,
     gap: 14,
   },
@@ -193,7 +216,9 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: COLORS.bgCardAlt,
+    borderWidth: 1,
+    borderColor: COLORS.borderGold,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -203,11 +228,11 @@ const styles = StyleSheet.create({
   profileName: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#111827',
+    color: COLORS.textPrimary,
   },
   profileSub: {
     fontSize: 13,
-    color: '#9ca3af',
+    color: COLORS.textAccent,
     marginTop: 2,
   },
   section: {
@@ -216,14 +241,16 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#9ca3af',
-    letterSpacing: 0.5,
+    color: COLORS.textAccent,
+    letterSpacing: 1.5,
     textTransform: 'uppercase',
     paddingHorizontal: 4,
   },
   sectionBox: {
-    backgroundColor: '#f9fafb',
+    backgroundColor: COLORS.bgCard,
     borderRadius: 16,
+    borderWidth: 1,
+    borderColor: COLORS.borderTabBar,
     overflow: 'hidden',
   },
   row: {
@@ -233,7 +260,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     gap: 12,
     borderBottomWidth: 0.5,
-    borderBottomColor: '#f3f4f6',
+    borderBottomColor: COLORS.borderTabBar,
   },
   rowLast: {
     borderBottomWidth: 0,
@@ -242,14 +269,14 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 8,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.bgCardAlt,
     alignItems: 'center',
     justifyContent: 'center',
   },
   rowLabel: {
     flex: 1,
     fontSize: 15,
-    color: '#111827',
+    color: COLORS.textPrimary,
     fontWeight: '500',
   },
   rowRight: {
@@ -259,6 +286,6 @@ const styles = StyleSheet.create({
   },
   rowValue: {
     fontSize: 14,
-    color: '#9ca3af',
+    color: COLORS.textAccent,
   },
 });

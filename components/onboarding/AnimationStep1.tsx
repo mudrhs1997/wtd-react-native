@@ -39,14 +39,14 @@ export default function AnimationStep1() {
       >
         <View style={styles.placeholderInner}>
           <Text style={styles.placeholderIcon}>▶</Text>
-          <Text style={styles.placeholderLabel}>애니메이션 삽입 예정</Text>
+          <Text style={styles.placeholderLabel}>Animation coming soon</Text>
         </View>
       </Animated.View>
 
       <View style={styles.textArea}>
-        <Text style={styles.title}>이렇게 사용해요</Text>
+        <Text style={styles.title}>Here's How It Works</Text>
         <Text style={styles.subtitle}>
-          질문을 입력하면{'\n'}즉시 명확한 답변을 드려요.
+          Type your question and{'\n'}get a clear answer instantly.
         </Text>
       </View>
     </Animated.View>
