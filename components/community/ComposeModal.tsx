@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { COLORS } from '../../constants/colors';
 
 interface Props {
   visible: boolean;
@@ -70,7 +71,7 @@ export default function ComposeModal({ visible, onClose, onSubmit }: Props) {
           <TextInput
             style={styles.input}
             placeholder="ex. Curious1, Anonymous42"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor={COLORS.textMuted}
             value={author}
             onChangeText={setAuthor}
             maxLength={20}
@@ -82,7 +83,7 @@ export default function ComposeModal({ visible, onClose, onSubmit }: Props) {
           <TextInput
             style={[styles.input, styles.questionInput]}
             placeholder={'Write your dilemma for\npeople to answer YES or NO.'}
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor={COLORS.textMuted}
             value={question}
             onChangeText={setQuestion}
             multiline
@@ -109,15 +110,19 @@ export default function ComposeModal({ visible, onClose, onSubmit }: Props) {
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
   },
   kavWrapper: {
     justifyContent: 'flex-end',
   },
   sheet: {
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.bgCard,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderColor: COLORS.borderGold,
     paddingHorizontal: 24,
     paddingTop: 12,
   },
@@ -125,7 +130,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 4,
     borderRadius: 2,
-    backgroundColor: '#e5e7eb',
+    backgroundColor: COLORS.borderTabBar,
     alignSelf: 'center',
     marginBottom: 20,
   },
@@ -138,31 +143,31 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '800',
-    color: '#111827',
+    color: COLORS.textPrimary,
     letterSpacing: -0.4,
   },
   cancelText: {
     fontSize: 15,
-    color: '#9ca3af',
+    color: COLORS.textAccent,
     fontWeight: '500',
   },
   label: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#6b7280',
-    letterSpacing: 0.3,
+    color: COLORS.textAccent,
+    letterSpacing: 1.5,
     textTransform: 'uppercase',
     marginBottom: 8,
   },
   input: {
-    borderWidth: 1.5,
-    borderColor: '#e5e7eb',
+    borderWidth: 1,
+    borderColor: COLORS.borderGold,
     borderRadius: 14,
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 15,
-    color: '#111827',
-    backgroundColor: '#f9fafb',
+    color: COLORS.textPrimary,
+    backgroundColor: COLORS.bgCardAlt,
     marginBottom: 16,
   },
   questionInput: {
@@ -171,23 +176,24 @@ const styles = StyleSheet.create({
   },
   counter: {
     fontSize: 12,
-    color: '#9ca3af',
+    color: COLORS.textAccent,
     textAlign: 'right',
     marginBottom: 20,
   },
   submitBtn: {
     height: 52,
-    backgroundColor: '#111827',
-    borderRadius: 14,
+    backgroundColor: COLORS.textAccent,
+    borderRadius: 29,
     alignItems: 'center',
     justifyContent: 'center',
   },
   submitBtnDisabled: {
-    backgroundColor: '#e5e7eb',
+    backgroundColor: COLORS.bgTrack,
   },
   submitText: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#fff',
+    fontSize: 14,
+    fontWeight: '900',
+    letterSpacing: 2,
+    color: COLORS.bg,
   },
 });

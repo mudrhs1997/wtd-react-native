@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { COLORS } from '../constants/colors';
 
 export type ChatItem = {
   id: string;
@@ -88,14 +89,16 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   questionBubble: {
-    backgroundColor: '#111827',
+    backgroundColor: COLORS.bgCardAlt,
     borderRadius: 18,
+    borderWidth: 1,
+    borderColor: COLORS.borderGold,
     paddingHorizontal: 16,
     paddingVertical: 10,
     maxWidth: '72%',
   },
   questionText: {
-    color: '#fff',
+    color: COLORS.textPrimary,
     fontSize: 15,
     fontWeight: '500',
     lineHeight: 22,
@@ -103,13 +106,13 @@ const styles = StyleSheet.create({
   answerText: {
     fontSize: 44,
     fontWeight: '900',
-    color: '#111827',
+    color: COLORS.textPrimary,
     marginBottom: 8,
     letterSpacing: -1,
   },
   reasonText: {
     fontSize: 15,
-    color: '#6b7280',
+    color: COLORS.textSpoken,
     lineHeight: 23,
   },
 });

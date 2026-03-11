@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
+import { COLORS } from '../constants/colors';
 
 type Props = {
   visible: boolean;
@@ -61,6 +62,6 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#9ca3af',
+    backgroundColor: COLORS.textAccent,
   },
 });

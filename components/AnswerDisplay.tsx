@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Dimensions, StyleSheet } from 'react-native';
+import { COLORS } from '../constants/colors';
 import type { AnswerResult } from '../services/claude';
 
 type Props = {
@@ -164,18 +165,19 @@ const styles = StyleSheet.create({
   },
   answer: {
     fontWeight: '900',
-    color: '#111827',
+    color: COLORS.textPrimary,
     textAlign: 'center',
+    letterSpacing: -3,
   },
   reason: {
     fontSize: 17,
-    color: '#6b7280',
+    color: COLORS.textSpoken,
     textAlign: 'center',
     marginTop: 20,
     lineHeight: 26,
     letterSpacing: 0.2,
   },
   cursor: {
-    color: '#9ca3af',
+    color: COLORS.textAccent,
   },
 });
